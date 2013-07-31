@@ -12,12 +12,18 @@
 // UI & appearance
 #define kHWBackgroundColor ccc4(142, 193, 218, 255)
 #define kHWTextColor ccc3(8, 90, 124);
-#define kHWTextHeadingFamily @"Marker Felt"
+#define kHWTextHeadingFamily @"MarkerFelt64.fnt"
+#define kHWTextBigMenuFamily @"MarkerFelt36.fnt"
+#define kHWTextMediumMenuFamily @"MarkerFelt24.fnt"
+#define kHWTextSmallMenuFamily @"MarkerFelt18.fnt"
 #define kHWTextBodyFamily @"Arial12.fnt"
 
 // Define macros to position items according to percentages on screen
 #define PCT_FROM_TOP(__f__)\
 [[CCDirector sharedDirector] winSize].height - [[CCDirector sharedDirector] winSize].height * __f__
+
+#define PCT_FROM_BOTTOM(__f__)\
+[[CCDirector sharedDirector] winSize].height - PCT_FROM_TOP(__f__)
 
 #define PCT_FROM_LEFT(__f__)\
 [[CCDirector sharedDirector] winSize].width - [[CCDirector sharedDirector] winSize].width * __f__

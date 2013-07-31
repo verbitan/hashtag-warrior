@@ -17,38 +17,52 @@
 {
     if ((self=[super init]))
     {
+        [self addTitle];
         [self addMainMenu];
         [self addTestTweetStream];
     }
     return self;
 }
 
-- (void) addMainMenu
+- (void) addTitle
 {
-    // Default font size will be 32 points.
-    [CCMenuItemFont setFontSize:32];
-    
-    // Menu items
-    CCMenuItemLabel *newGame = [CCMenuItemFont itemWithString:NSLocalizedString(@"New Game", nil) block:^(id sender)
+    CCLabelBMFont *title = [CCLabelBMFont labelWithString:@"#Warrior"
+                                                  fntFile:kHWTextHeadingFamily];
+    title.color = kHWTextColor;
+    title.position = ccp(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.15));
+    [self addChild: title];
+}
+
+- (void) addMainMenu
+{   
+    // New game menu item.
+    CCLabelBMFont *newGameText = [CCLabelBMFont labelWithString:NSLocalizedString(@"New Game", nil)
+                                                        fntFile:kHWTextBigMenuFamily];
+    newGameText.color = kHWTextColor;
+    CCMenuItemLabel *newGameMenuItem = [CCMenuItemFont itemWithLabel:newGameText
+                                                               block:^(id sender)
     {
         [[GameManager sharedGameManager] runSceneWithID:kHWChooseHashtagScene];
     }];
-    newGame.color = kHWTextColor;
-    CCMenuItemLabel *about = [CCMenuItemFont itemWithString:NSLocalizedString(@"About", nil) block:^(id aboutSender)
+
+    // About menu item.
+    CCLabelBMFont *aboutText = [CCLabelBMFont labelWithString:NSLocalizedString(@"About", nil)
+                                                      fntFile:kHWTextBigMenuFamily];
+    aboutText.color = kHWTextColor;
+    CCMenuItemLabel *aboutMenuItem = [CCMenuItemFont itemWithLabel:aboutText
+                                                             block:^(id aboutSender)
     {
         [[GameManager sharedGameManager] runSceneWithID:kHWAboutScene];
     }];
-    about.color = kHWTextColor;
     
     // Create the main menu.
-    CCMenu *menu = [CCMenu menuWithItems:newGame, about, nil];
+    CCMenu *menu = [CCMenu menuWithItems:newGameMenuItem, aboutMenuItem, nil];
     
     // Align everything vertically.
     [menu alignItemsVertically];
     
     // Place it in the middle of the screen.
-    CGSize size = [[CCDirector sharedDirector] winSize];
-    [menu setPosition:ccp(size.width/2, size.height/2)];
+    [menu setPosition:ccp(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.5))];
     
     // Add to the layer.
     [self addChild: menu];
@@ -63,15 +77,14 @@
     [_tweetEmitter startTweetStream:@"#Warrior"];
     
     // Make a label.
-    CGSize size = [[CCDirector sharedDirector] winSize];
     _tweet = [CCLabelBMFont labelWithString:@"#Warrior"
                                     fntFile:kHWTextBodyFamily
-                                      width:size.width
+                                      width:[[CCDirector sharedDirector] winSize].width
                                   alignment:kCCTextAlignmentCenter];
     _tweet.color = kHWTextColor;
     
     // Add the label to the layer.
-    _tweet.position = ccp(size.width/2, [_tweet boundingBox].size.height);
+    _tweet.position = ccp(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.95));
     [self addChild: _tweet];
 }
 

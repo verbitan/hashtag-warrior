@@ -20,9 +20,8 @@
         _tf = [[TrendFinder alloc] init];
         
         // Create title
-        CCLabelTTF *title = [CCLabelTTF labelWithString:NSLocalizedString(@"Pick hashtag", nil)
-                                               fontName:kHWTextHeadingFamily
-                                               fontSize:32];
+        CCLabelBMFont *title = [CCLabelBMFont labelWithString:NSLocalizedString(@"Pick hashtag", nil)
+                                                      fntFile:kHWTextBigMenuFamily];
         title.color = kHWTextColor;
         title.position = CGPointMake(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.1));
         [self addChild: title];
@@ -44,11 +43,14 @@
         
         // Add a menu item for each hashtag
         int maxToShow = MIN(choices.count, 5);
-        for (int n = 0; n < maxToShow; n = n + 1) {
+        for (int n = 0; n < maxToShow; n = n + 1)
+        {
             NSString* currentHashtag = choices[n];
             
-            CCLabelTTF *label = [CCLabelTTF labelWithString:currentHashtag fontName: kHWTextHeadingFamily fontSize: 24];
-            CCMenuItemLabel *item = [CCMenuItemLabel itemWithLabel:label block:^(id sender)
+            CCLabelBMFont *label = [CCLabelBMFont labelWithString:currentHashtag
+                                                          fntFile:kHWTextMediumMenuFamily];
+            CCMenuItemLabel *item = [CCMenuItemLabel itemWithLabel:label
+                                                             block:^(id sender)
             {
                 [self makeChoice:currentHashtag];
             }];

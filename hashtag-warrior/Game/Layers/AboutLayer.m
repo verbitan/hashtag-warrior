@@ -38,24 +38,20 @@
         CGSize size = [[CCDirector sharedDirector] winSize];
         
         // Add labels
-        int posY = size.height-60;
-        CCLabelTTF *title = [CCLabelTTF labelWithString:@"#Warrior"
-                                        fontName:kHWTextHeadingFamily
-                                        fontSize:48];
-        title.position = ccp(size.width/2, posY);
+        CCLabelBMFont *title = [CCLabelBMFont labelWithString:@"#Warrior"
+                                                      fntFile:kHWTextHeadingFamily];
         title.color = kHWTextColor;
-        posY -= 80;
+        title.position = ccp(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.15));
         
-        CCLabelTTF *blurb = [CCLabelTTF labelWithString:NSLocalizedString(@"About Blurb", nil)
-                                        fontName:@"Arial"
-                                        fontSize:18];
+        int posY = size.height-140;
+        CCLabelBMFont *blurb = [CCLabelBMFont labelWithString:NSLocalizedString(@"About Blurb", nil)
+                                                     fntFile:kHWTextBodyFamily];
         blurb.position = ccp(size.width/2, posY);
         blurb.color = kHWTextColor;
         posY -= 80;
         
-        CCLabelTTF *credits = [CCLabelTTF labelWithString:NSLocalizedString(@"About Credits", nil)
-                                          fontName:@"Arial"
-                                          fontSize:14];
+        CCLabelBMFont *credits = [CCLabelBMFont labelWithString:NSLocalizedString(@"About Credits", nil)
+                                                       fntFile:kHWTextBodyFamily];
         credits.position = ccp(size.width/2, posY);
         credits.color = kHWTextColor;
         
@@ -64,12 +60,15 @@
         [self addChild: credits];
         
         // Add return to menu... menu
-        [CCMenuItemFont setFontSize:18];
-        CCMenuItemLabel *home = [CCMenuItemFont itemWithString:NSLocalizedString(@"Main Menu", nil) block:^(id sender)
-                                  {
-                                      [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
-                                  }];
-        home.color = kHWTextColor;
+        CCLabelBMFont *homeText = [CCLabelBMFont labelWithString:NSLocalizedString(@"Main Menu", nil)
+                                                         fntFile:kHWTextSmallMenuFamily];
+        homeText.color = kHWTextColor;
+        CCMenuItemLabel *home = [CCMenuItemFont itemWithLabel:homeText
+                                                        block:^(id sender)
+        {
+            [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
+        }];
+        
         CCMenu *menu = [CCMenu menuWithItems:home, nil];
         [menu alignItemsVertically];
         [menu setPosition:ccp(size.width/2, 20)];

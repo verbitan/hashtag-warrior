@@ -35,91 +35,117 @@
 {
     if ((self=[super init]))
     {
-        CGSize size = [[CCDirector sharedDirector] winSize];
-        
-        // Create title
-        CCLabelTTF *title = [CCLabelTTF labelWithString:NSLocalizedString(@"Game Over!", nil)
-                                               fontName:kHWTextHeadingFamily
-                                               fontSize:64];
-        title.color = kHWTextColor;
-        title.position = ccp(size.width/2, (size.height/2)+100);
-        [self addChild: title];
-        
-        // Show score
-        NSString *youScored;
-        if([[GameState sharedInstance] _practice]) {
-            youScored = [NSString stringWithFormat:NSLocalizedString(@"You scored practice", nil), [GameState sharedInstance]._score];
-            
-        } else {
-            youScored = [NSString stringWithFormat:NSLocalizedString(@"You scored", nil), [GameState sharedInstance]._score, [GameState sharedInstance]._hashtag];
-        }
-        
-        CCLabelTTF *score = [CCLabelTTF labelWithString:youScored
-                                               fontName:kHWTextHeadingFamily
-                                               fontSize:24];
-        score.color = kHWTextColor;
-        score.position = ccp(size.width/2, size.height/2);
-        [self addChild: score];
-        
-        // Create menu
-        CCMenuItemLabel *playAgain = [CCMenuItemFont itemWithString:NSLocalizedString(@"Play again", nil) block:^(id sender)
-                                    {
-                                        [[GameManager sharedGameManager] runSceneWithID:kHWGameScene];
-                                    }];
-        playAgain.color = kHWTextColor;
-        CCMenuItemLabel *mainMenu = [CCMenuItemFont itemWithString:NSLocalizedString(@"Main menu", nil) block:^(id sender)
-                                  {
-                                      [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
-                                  }];
-        mainMenu.color = kHWTextColor;
-        CCMenuItemLabel *shareIt = [CCMenuItemFont itemWithString:NSLocalizedString(@"Share", nil) block:^(id sender)
-                                     {
-                                         // First check if we are able to send a Tweet.
-                                         if ( [TWTweetComposeViewController canSendTweet] )
-                                         {
-                                             // We are! Now create the Tweet Sheet.
-                                             TWTweetComposeViewController *tweetSheet = [[TWTweetComposeViewController alloc] init];
-                                             
-                                             // Set the initial text.
-                                             NSString *tweetText = [NSString stringWithFormat:NSLocalizedString(@"Glory Tweet", nil), [GameState sharedInstance]._score, [GameState sharedInstance]._hashtag];
-                                             [tweetSheet setInitialText:tweetText];
-                                             
-                                             // Attach our URL.
-                                             NSURL *url = [[NSURL alloc] initWithString:NSLocalizedString(@"URL", nil)];
-                                             [tweetSheet addURL:url];
-                                             
-                                             // Popup the Tweet Sheet for Tweeting with.
-                                             [[CCDirector sharedDirector] presentModalViewController:tweetSheet animated:YES];
-                                         }
-                                         else
-                                         {
-                                             // Alert the user to our inability to Tweet anything.
-                                             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Tweetastrophe", nil)
-                                                                                                 message:NSLocalizedString(@"No Twitter", nil)
-                                                                                                delegate:nil
-                                                                                       cancelButtonTitle:NSLocalizedString(@"Dismiss", nil)
-                                                                                       otherButtonTitles:nil];
-                                             [alertView show];
-                                         }
-                                     }];
-        shareIt.color = kHWTextColor;
-        CCMenu *menu = [CCMenu menuWithItems:playAgain, mainMenu, nil];
-        
-        // Only add the share button if not in practice mode
-        if(![[GameState sharedInstance] _practice]) {
-            [menu addChild: shareIt];
-        }
-        
-        [menu alignItemsHorizontallyWithPadding:25.0f];
-        menu.position = ccp(size.width/2, size.height - 250);
-        [self addChild: menu];
+        [self addTitle];
+        [self addScore];
+        [self addMenu];
     }
     return self;
 }
 
--(void) backToMain:(ccTime)dt
+- (void) addTitle
 {
-    [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
+    CCLabelBMFont *title = [CCLabelBMFont labelWithString:NSLocalizedString(@"Game Over!", nil)
+                                                  fntFile:kHWTextHeadingFamily];
+    title.color = kHWTextColor;
+    title.position = ccp(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.5)+100);
+    [self addChild: title];
+}
+
+- (void) addScore
+{
+    // Show score
+    NSString *youScored;
+    if ( [[GameState sharedInstance] _practice] ) {
+        youScored = [NSString stringWithFormat:NSLocalizedString(@"You scored practice", nil), [GameState sharedInstance]._score];
+        
+    } else {
+        youScored = [NSString stringWithFormat:NSLocalizedString(@"You scored", nil), [GameState sharedInstance]._score, [GameState sharedInstance]._hashtag];
+    }
+    
+    CCLabelTTF *score = [CCLabelTTF labelWithString:youScored
+                                           fontName:kHWTextHeadingFamily
+                                           fontSize:24];
+
+    score.color = kHWTextColor;
+    score.position = ccp(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.5));
+    [self addChild: score];
+}
+
+- (void) addMenu
+{
+    // Play again menu item.
+    CCLabelBMFont *playAgainText = [CCLabelBMFont labelWithString:NSLocalizedString(@"Play again", nil)
+                                                          fntFile:kHWTextSmallMenuFamily];
+    playAgainText.color = kHWTextColor;
+    CCMenuItemLabel *playAgain = [CCMenuItemFont itemWithLabel:playAgainText
+                                                         block:^(id sender)
+    {
+        [[GameManager sharedGameManager] runSceneWithID:kHWGameScene];
+    }];
+    
+    // Main menu menu item.
+    CCLabelBMFont *mainMenuText = [CCLabelBMFont labelWithString:NSLocalizedString(@"Main menu", nil)
+                                                        fntFile:kHWTextSmallMenuFamily];
+    mainMenuText.color = kHWTextColor;
+    CCMenuItemLabel *mainMenu = [CCMenuItemFont itemWithLabel:mainMenuText
+                                                        block:^(id sender)
+    {
+        [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
+    }];
+    
+    // Share with Twitter menu item.
+    CCLabelBMFont *shareText = [CCLabelBMFont labelWithString:NSLocalizedString(@"Share", nil)
+                                                         fntFile:kHWTextSmallMenuFamily];
+    shareText.color = kHWTextColor;
+    CCMenuItemLabel *share = [CCMenuItemFont itemWithLabel:shareText
+                                                     block:^(id sender)
+    {
+        // First check if we are able to send a Tweet.
+        if ( [TWTweetComposeViewController canSendTweet] )
+        {
+            // We are! Now create the Tweet Sheet.
+            TWTweetComposeViewController *tweetSheet = [[TWTweetComposeViewController alloc] init];
+            
+            // Set the initial text.
+            NSString *tweetText = [NSString stringWithFormat:NSLocalizedString(@"Glory Tweet", nil),
+                                      [GameState sharedInstance]._score, [GameState sharedInstance]._hashtag];
+            [tweetSheet setInitialText:tweetText];
+            
+            // Attach our URL.
+            NSURL *url = [[NSURL alloc] initWithString:NSLocalizedString(@"URL", nil)];
+            [tweetSheet addURL:url];
+            
+            // Popup the Tweet Sheet for Tweeting with.
+            [[CCDirector sharedDirector] presentModalViewController:tweetSheet animated:YES];
+        }
+        else
+        {
+            // Alert the user to our inability to Tweet anything.
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Tweetastrophe", nil)
+                                                                message:NSLocalizedString(@"No Twitter", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+    
+    // Create the actual menu.
+    CCMenu *menu = [CCMenu menuWithItems:playAgain, mainMenu, nil];
+    
+    // Only add the share button if not in practice mode.
+    if(![[GameState sharedInstance] _practice]) {
+        [menu addChild: share];
+    }
+    
+    // Align everything horizontally with a bit of padding.
+    [menu alignItemsHorizontallyWithPadding:25.0f];
+    
+    // Place it in the middle of the screen.
+    [menu setPosition:ccp(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.5)-50)];
+    
+    // Add to the layer.
+    [self addChild: menu];
 }
 
 @end

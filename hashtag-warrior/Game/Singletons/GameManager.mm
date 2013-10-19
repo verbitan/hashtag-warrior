@@ -29,7 +29,7 @@
 #import "GameOverScene.h"
 #import "ChooseHashtagScene.h"
 #import "GameScene.h"
-#import "IntroScene.h"
+#import "SplashScene.h"
 #import "MainMenuScene.h"
 
 @implementation GameManager
@@ -103,7 +103,7 @@ static GameManager* sharedInstance = nil;
             sceneToRun = [AboutScene node];
             break;
         case kHWIntroScene:
-            sceneToRun = [IntroScene node];
+            sceneToRun = [SplashScene node];
             break;
         case kHWGameOverScene:
             sceneToRun = [GameOverScene node];

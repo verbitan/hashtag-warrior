@@ -24,13 +24,11 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
-    @autoreleasepool
-    {
-        int retVal = UIApplicationMain(argc, argv, nil, @"AppController");
-        return retVal;
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
 }

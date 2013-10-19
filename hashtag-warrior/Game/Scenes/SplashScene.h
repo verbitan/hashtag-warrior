@@ -24,22 +24,10 @@
  * THE SOFTWARE.
  */
 
-#import "IntroScene.h"
-#import "IntroLayer.h"
-
-
-@implementation IntroScene
-
-- (id)init
+@interface SplashScene : SKScene
 {
-    if ((self = [super init]))
-    {
-        // All this scene does upon initialization is init & add the layer class.
-        IntroLayer *layer = [IntroLayer node];
-        [self addChild:layer];
-    }
-    
-    return self;
 }
+
+@property BOOL contentCreated;
 
 @end

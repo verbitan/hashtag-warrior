@@ -24,12 +24,37 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#import "Utilities.h"
 
-#import "cocos2d.h"
+@implementation Utilities
 
-@interface IntroScene : CCScene
++ (SKTextureAtlas*)initTextureAtlasNamed:(NSString*)fileName
 {
+    if ( IS_IPHONE )
+    {
+        if ( IS_IPHONE_5 )
+        {
+            // iPhone Retina 4-inch
+            fileName = [NSString stringWithFormat:@"%@-568h", fileName];
+        }
+        else
+        {
+            // iPhone Retina 3.5-inch
+            fileName = fileName;
+        }
+        
+    }
+    else
+    {
+        // iPad
+        fileName = [NSString stringWithFormat:@"%@-ipad", fileName];
+    }
+    
+    NSLog(@"File named %@", fileName);
+    
+    SKTextureAtlas* textureAtlas = [SKTextureAtlas atlasNamed:fileName];
+    
+    return textureAtlas;
 }
 
 @end

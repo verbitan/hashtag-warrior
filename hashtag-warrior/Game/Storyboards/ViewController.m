@@ -24,43 +24,51 @@
  * THE SOFTWARE.
  */
 
-#import "IntroLayer.h"
-#import "GameManager.h"
+#import "ViewController.h"
 
-// GameLayer implementation
-@implementation IntroLayer
+#import "SplashScene.h"
 
--(void) onEnter
+@implementation ViewController
+
+- (void)viewWillLayoutSubviews
 {
-    [super onEnter];
-
-    // ask director for the window size.
-    CGSize size = [[CCDirector sharedDirector] winSize];
+    [super viewWillLayoutSubviews];
     
-    // The application is landscape only, set this scenes background image accordingly.
-    CCSprite *background;
+    // Configure the view.
+    SKView* skView = (SKView*)self.view;
     
-    if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone )
+    if ( !skView.scene )
     {
-        background = [CCSprite spriteWithFile:@"Default.png"];
-        background.rotation = 90;
+#ifdef DEBUG
+        // Debugging information.
+        skView.showsDrawCount = YES;
+        skView.showsFPS = YES;
+        skView.showsNodeCount = YES;
+#endif
+        // Create and configure the intro scene.
+        SKScene* scene = [SplashScene sceneWithSize:skView.bounds.size];
+        scene.scaleMode = SKSceneScaleModeAspectFill;
+        
+        // Present the scene.
+        [skView presentScene:scene];
     }
-    else
-    {
-        background = [CCSprite spriteWithFile:@"Default-Landscape~ipad.png"];
-    }
-
-    background.position = ccp(size.width/2, size.height/2);
-
-    [self addChild: background];
-    
-    // In one second transition to the new scene.
-    [self scheduleOnce:@selector(makeTransition:) delay:1];
 }
 
--(void) makeTransition:(ccTime)dt
+- (BOOL)shouldAutorotate
 {
-    [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    // We can only be landscape.
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    // Release any cached data, images, etc that aren't in use.
+    [super didReceiveMemoryWarning];
 }
 
 @end

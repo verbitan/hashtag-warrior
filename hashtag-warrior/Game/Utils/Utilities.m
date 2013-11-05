@@ -50,8 +50,6 @@
         fileName = [NSString stringWithFormat:@"%@-ipad", fileName];
     }
     
-    NSLog(@"File named %@", fileName);
-    
     SKTextureAtlas* textureAtlas = [SKTextureAtlas atlasNamed:fileName];
     
     return textureAtlas;

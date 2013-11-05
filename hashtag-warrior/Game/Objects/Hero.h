@@ -24,18 +24,19 @@
  * THE SOFTWARE.
  */
 
+#import <CoreMotion/CMAccelerometer.h>
 #import "GameObject.h"
 
 @interface Hero : GameObject
 {
-    CCAnimation *walkingAnim;
-    CCAnimation *idleAnim;
+    SKAction* idleAnim;
+    SKAction* runningAnim;
 }
-@property (nonatomic, strong) CCAnimation *walkingAnim;
-@property (nonatomic, strong) CCAnimation *idleAnim;
 
-- (id)initWithWorld:(b2World*)world atLocation:(CGPoint)location;
-- (void)accelerometer:(UIAccelerometer*)accelerometer
-        didAccelerate:(UIAcceleration*)acceleration;
+@property (nonatomic, strong) SKAction* idleAnim;
+@property (nonatomic, strong) SKAction* runningAnim;
+
+-(id)initAtPosition:(CGPoint)position;
+-(void)handleAccelerometerData:(CMAccelerometerData*)data;
 
 @end

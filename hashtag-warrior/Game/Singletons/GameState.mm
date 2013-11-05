@@ -49,7 +49,7 @@
     {
         self._score = 0;
         self._hashtag = @"#Warrior";
-        self._gravity = b2Vec2(0.0f, -10.0f);
+        self._gravity = CGPointMake(0.0, -9.8f);
         self._practice = TRUE;
     }
     
@@ -60,6 +60,7 @@
 {
     [coder encodeInt:self._score forKey:@"_score"];
     [coder encodeObject:self._hashtag forKey:@"_hashtag"];
+    [coder encodeCGPoint:self._gravity forKey:@"_gravity"];
     [coder encodeBool:self._practice forKey:@"_practice"];
 }
 
@@ -67,10 +68,11 @@
 {
     self = [super init];
     
-    if(self != nil)
+    if ( self != nil )
     {
         self._score = [coder decodeIntForKey:@"_score"];
         self._hashtag = [coder decodeObjectForKey:@"_hashtag"];
+        self._gravity = [coder decodeCGPointForKey:@"_gravity"];
         self._practice = [coder decodeBoolForKey:@"_practice"];
     }
     

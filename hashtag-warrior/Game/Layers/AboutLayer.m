@@ -43,21 +43,21 @@
                                         fontName:kHWTextHeadingFamily
                                         fontSize:48];
         title.position = ccp(size.width/2, posY);
-        title.color = kHWTextColor;
+        title.color = kHWTextColor_cc2d;
         posY -= 80;
         
         CCLabelTTF *blurb = [CCLabelTTF labelWithString:NSLocalizedString(@"About Blurb", nil)
                                         fontName:@"Arial"
                                         fontSize:18];
         blurb.position = ccp(size.width/2, posY);
-        blurb.color = kHWTextColor;
+        blurb.color = kHWTextColor_cc2d;
         posY -= 80;
         
         CCLabelTTF *credits = [CCLabelTTF labelWithString:NSLocalizedString(@"About Credits", nil)
                                           fontName:@"Arial"
                                           fontSize:14];
         credits.position = ccp(size.width/2, posY);
-        credits.color = kHWTextColor;
+        credits.color = kHWTextColor_cc2d;
         
         [self addChild: title];
         [self addChild: blurb];
@@ -69,7 +69,7 @@
                                   {
                                       [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
                                   }];
-        home.color = kHWTextColor;
+        home.color = kHWTextColor_cc2d;
         CCMenu *menu = [CCMenu menuWithItems:home, nil];
         [menu alignItemsVertically];
         [menu setPosition:ccp(size.width/2, 20)];

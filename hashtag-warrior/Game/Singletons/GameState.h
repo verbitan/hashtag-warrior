@@ -24,16 +24,11 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-
-#import "cocos2d.h"
-#import "Box2D.h"
-
 @interface GameState : NSObject <NSCoding>
 {
     NSString *__weak _hashtag;
     NSInteger _score;
-    b2Vec2 _gravity;
+    CGPoint _gravity;
     bool _practice;
 }
 
@@ -41,7 +36,7 @@
 
 @property (weak, readwrite) NSString *_hashtag;
 @property (readwrite) NSInteger _score;
-@property (readwrite) b2Vec2 _gravity;
+@property (readwrite) CGPoint _gravity;
 @property (readwrite) bool _practice;
 
 @end

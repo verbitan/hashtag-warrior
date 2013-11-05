@@ -51,14 +51,15 @@ static GameManager* sharedInstance = nil;
 {
     self = [super init];
     
-    if (self != nil) {
+    if ( self != nil )
+    {
         _currentScene = kHWNoScene;
     }
     
     return self;
 }
 
-- (NSString*)formatSceneTypeToString:(SceneTypes)sceneID
+-(NSString*)formatSceneTypeToString:(SceneTypes)sceneID
 {
     NSString *result = nil;
     switch(sceneID) {

@@ -24,7 +24,6 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
 #import "CommonProtocols.h"
 
 @interface GameManager : NSObject {

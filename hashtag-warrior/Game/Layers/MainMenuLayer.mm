@@ -56,12 +56,12 @@
             [[GameManager sharedGameManager] runSceneWithID:kHWChooseHashtagScene];
         }
     }];
-    newGame.color = kHWTextColor;
+    newGame.color = kHWTextColor_cc2d;
     CCMenuItemLabel *about = [CCMenuItemFont itemWithString:NSLocalizedString(@"About", nil) block:^(id aboutSender)
     {
         [[GameManager sharedGameManager] runSceneWithID:kHWAboutScene];
     }];
-    about.color = kHWTextColor;
+    about.color = kHWTextColor_cc2d;
     
     // Create the main menu.
     CCMenu *menu = [CCMenu menuWithItems:newGame, about, nil];
@@ -91,7 +91,7 @@
                                     fntFile:kHWTextBodyFamily
                                       width:size.width
                                   alignment:kCCTextAlignmentCenter];
-    _tweet.color = kHWTextColor;
+    _tweet.color = kHWTextColor_cc2d;
     
     // Add the label to the layer.
     _tweet.position = ccp(size.width/2, [_tweet boundingBox].size.height);

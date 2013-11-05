@@ -36,11 +36,10 @@ typedef enum {
 } GameObjectState;
 
 typedef enum {
-    kNullType,
-    kHeroType,
-    kTweetType,
-    kTwooshType
-} GameObjectType;
+    kNullCategory = 0xFFFFFFFF,
+    kHeroCategory = 0x1 << 1,
+    kProjectileCategory = 0x1 << 2
+} GameObjectCategory;
 
 typedef enum {
     kHWNoScene=0,

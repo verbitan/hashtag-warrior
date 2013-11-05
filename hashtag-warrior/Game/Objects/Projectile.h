@@ -28,7 +28,7 @@
 
 @interface Projectile : GameObject
 
-- (id)initWithWorld:(b2World*)world atLocation:(CGPoint)location;
+-(id)initAtPosition:(CGPoint)position;
 
 @end
 

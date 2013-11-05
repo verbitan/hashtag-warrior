@@ -26,14 +26,16 @@
 
 #import "SplashScene.h"
 
-#import "MainMenuScene.h"
-#import "Utilities.h"
+#import <MainMenuScene.h>
+#import <GameScene.h>
+#import <Utilities.h>
 
 @implementation SplashScene
 
--(id) initWithSize:(CGSize)size {
-    if ( self = [super initWithSize:size] ) {
-        
+-(id) initWithSize:(CGSize)size
+{
+    if ( self = [super initWithSize:size] )
+    {
         // Initialise contentCreated to NO.
         self.contentCreated = NO;
         
@@ -54,25 +56,58 @@
     return self;
 }
 
-- (void)didMoveToView: (SKView*) view {
-    if ( !self.contentCreated ) {
+- (void)didMoveToView: (SKView*) view
+{
+    if ( !self.contentCreated )
+    {
         self.contentCreated = YES;
         
-        SKTextureAtlas* background = [Utilities initTextureAtlasNamed:@"Background"];
-
-        NSArray* textureAtlases = [NSArray arrayWithObjects:background, nil];
+        // Locate the preload plist within the app bundle.
+        NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Preload" ofType:@"plist"];
         
-        [SKTextureAtlas preloadTextureAtlases:textureAtlases
-                        withCompletionHandler:^(void)
+        // Initialise the preload data.
+        NSMutableArray* preloadTextures = [[NSMutableArray alloc] init];
+        
+        // If we managed to find the plist...
+        if ( plistPath != nil )
         {
-            NSLog(@"Preloaded textures successfully.");
+            // ...extract the root dictionary.
+            NSDictionary* rootCfg = [NSDictionary dictionaryWithContentsOfFile:plistPath];
             
-            // TODO: Load main menu scene. Need to convert to SpriteKit first.
-            //SKScene* mainMenuScene = [[MainMenuScene alloc] initWithSize:self.size];
-            //SKTransition* transition = [SKTransition fadeWithDuration:0.5];
-            
-            //[self.view presentScene:mainMenuScene transition:transition];
-        }];
+            // If we managed to extract the root config...
+            if ( rootCfg != nil )
+            {
+                // ...try and extract the texture atlases to preload.
+                NSArray* preloadTextureNames = rootCfg[@"TextureAtlases"];
+                
+                // Finally if we managed to extract the texture atlas names...
+                if ( preloadTextureNames != nil )
+                {
+                    // ...load all the details for the given animation.
+                    for ( NSString* textureName in preloadTextureNames )
+                    {
+                        // Create the texture atlas.
+                        SKTextureAtlas* atlas = [Utilities initTextureAtlasNamed:textureName];
+                        
+                        // Add it to the array to preload.
+                        [preloadTextures addObject:atlas];
+                    }
+                }
+            }
+        }
+        
+        // Preload the texture atlases.
+        [SKTextureAtlas preloadTextureAtlases:preloadTextures
+                        withCompletionHandler:^(void)
+         {
+             NSLog(@"Preloaded textures successfully.");
+             
+             //SKScene* mainMenuScene = [[MainMenuScene alloc] initWithSize:self.size];
+             SKScene* mainMenuScene = [[GameScene alloc] initWithSize:self.size];
+             SKTransition* transition = [SKTransition fadeWithDuration:2.0];
+             
+             [self.view presentScene:mainMenuScene transition:transition];
+         }];
     }
 }
 

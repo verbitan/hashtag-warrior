@@ -28,40 +28,32 @@
 
 @implementation Projectile
 
-- (id) initWithWorld:(b2World*)world atLocation:(CGPoint)location
+-(id)initAtPosition:(CGPoint)position
 {
-    if (self=[self initWithSpriteFrameName:@"projectile.png"])
+    if ( self = [super initAtPosition:position forClassName:NSStringFromClass([self class])] )
     {
-        self.gameObjectType = kTweetType;
-        [self createBodyWithWorld:world atLocation:location];
+        [self initPhysics];
     }
     
     return self;
 }
 
-- (void) createBodyWithWorld:(b2World*)world atLocation:(CGPoint)location
+-(void)initPhysics
 {
-    // Create the body definition first, position this
-    b2BodyDef projectileBodyDef;
-    projectileBodyDef.type = b2_dynamicBody;
-    projectileBodyDef.position = b2Vec2(location.x/PTM_RATIO, location.y/PTM_RATIO);
+    self.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:self.frame.size.width/2];
     
-    // Create the body
-    b2Body *projectileBody = world->CreateBody(&projectileBodyDef);
-    projectileBody->SetUserData((__bridge void*)self);
-    [self setPhysicsBody:projectileBody];
+    self.physicsBody.categoryBitMask = kProjectileCategory;
+    self.physicsBody.contactTestBitMask = kHeroCategory;
+    self.physicsBody.collisionBitMask = kHeroCategory;
+    self.physicsBody.usesPreciseCollisionDetection = YES;
     
-    // Create the shape
-    b2CircleShape projectileShape;
-    projectileShape.m_radius = (self.contentSize.width/2)/PTM_RATIO;
+    self.physicsBody.dynamic = YES;
+    self.physicsBody.density = 0.5f;
+    self.physicsBody.friction = 0.001f;
+    self.physicsBody.restitution = 1.0f;
     
-    // Create the definition and add to body
-    b2FixtureDef projectileFixtureDef;
-    projectileFixtureDef.shape = &projectileShape;
-    projectileFixtureDef.density = 1.0f;
-    projectileFixtureDef.friction = 0.5f;
-    projectileFixtureDef.restitution = 0.6f;
-    projectileBody->CreateFixture(&projectileFixtureDef);
+    self.physicsBody.linearDamping = 0.0f;
+    self.physicsBody.angularDamping = 1.0f;
 }
 
 @end

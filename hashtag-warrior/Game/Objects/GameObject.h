@@ -24,36 +24,29 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-
-#import "cocos2d.h"
-#import "Box2D.h"
 #import "Constants.h"
 #import "CommonProtocols.h"
 
-@interface GameObject : CCSprite
+@interface GameObject : SKSpriteNode
 {
-    BOOL isActive;
     BOOL reactsToScreenBoundaries;
-    CGSize screenSize;
-    GameObjectType gameObjectType;
     GameObjectState state;
-    b2Body *physicsBody;
+    
+    NSDictionary* _initCfg;
+    NSDictionary* _animCfg;
+    
+    SKTexture* _initFrame;
 }
 
-@property (readwrite) BOOL isActive;
 @property (readwrite) BOOL reactsToScreenBoundaries;
-@property (readwrite) CGSize screenSize;
-@property (readwrite) GameObjectType gameObjectType;
 @property (readwrite) GameObjectState state;
-@property (readwrite) b2Body* physicsBody;
+
+-(id)initAtPosition:(CGPoint)position forClassName:(NSString*)className;
 
 -(void)changeState:(GameObjectState)newState;
 
--(void)updateStateWithDeltaTime:(ccTime)deltaTime andListOfGameObjects:(CCArray*)listOfGameObjects;
+//-(void)updateStateWithDeltaTime:(ccTime)deltaTime andListOfGameObjects:(CCArray*)listOfGameObjects;
 
--(CGRect)adjustedBoundingBox;
-
--(CCAnimation*)loadPlistForAnimationWithName:(NSString*)animationName andClassName:(NSString*)className;
+-(SKAction*)animationWithName:(NSString*)animationName;
 
 @end

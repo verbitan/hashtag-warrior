@@ -24,12 +24,18 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#include <CoreMotion/CoreMotion.h>
+#include <GameState.h>
+#include <Hero.h>
+#include <Projectile.h>
 
-#import "cocos2d.h"
-
-@interface GameScene : CCScene
-{    
+@interface GameScene : SKScene
+{
+    GameState* _state;
+    Hero* _hero;
+    Projectile* _projectile;
 }
+
+@property (strong) CMMotionManager* motionManager;
 
 @end

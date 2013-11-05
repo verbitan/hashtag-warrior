@@ -41,7 +41,7 @@
         CCLabelTTF *title = [CCLabelTTF labelWithString:NSLocalizedString(@"Pick hashtag", nil)
                                                fontName:kHWTextHeadingFamily
                                                fontSize:32];
-        title.color = kHWTextColor;
+        title.color = kHWTextColor_cc2d;
         title.position = CGPointMake(PCT_FROM_LEFT(0.5), PCT_FROM_TOP(0.1));
         [self addChild: title];
         
@@ -70,7 +70,7 @@
             {
                 [self makeChoice:currentHashtag];
             }];
-            item.color = kHWTextColor;
+            item.color = kHWTextColor_cc2d;
             [menu addChild: item];
         }
         

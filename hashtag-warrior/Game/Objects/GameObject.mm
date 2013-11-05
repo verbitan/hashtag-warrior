@@ -26,95 +26,157 @@
 
 #import "GameObject.h"
 
+#import "Utilities.h"
+
 @implementation GameObject
 
 @synthesize reactsToScreenBoundaries;
-@synthesize screenSize;
-@synthesize isActive;
-@synthesize gameObjectType;
 @synthesize state;
-@synthesize physicsBody;
 
--(id) init {
-    if((self = [super init])){
-        screenSize = [CCDirector sharedDirector].winSize;
-        isActive = TRUE;
-        gameObjectType = kNullType;
+-(id)initAtPosition:(CGPoint)position forClassName:(NSString*)className
+{
+    // We don't have the initial image at this point so just construct a small white square.
+    if ( self = [super initWithColor:[UIColor colorWithWhite:1.0f alpha:1.0f] size:CGSizeMake(1.0f, 1.0f)] )
+    {
+        // Go parse the configuration for the game object.
+        [self readPlist:@"GameObject" forClassName:className];
+        
+        // Load the init animation.
+        // Note: This doesn't resize straight away, only after the animation has run. So if there's a delay in the
+        //       animation the initial size of the sprite will be reported as 1x1.
+        [self loadInitAnimation];
+        
+        // To get around the above, set the size of the game object to the first frame in the init animation.
+        self.size = _initFrame.size;
+        
+        // Update the position of the game object based on what we were told.
+        self.position = position;
     }
     
     return self;
 }
 
--(void)changeState:(GameObjectState)newState {
-    // Child classes should override this
-}
-
--(void)updateStateWithDeltaTime:(ccTime)deltaTime andListOfGameObjects:(CCArray*)listOfGameObjects {
-    // Child classes should override this
-}
-
--(CGRect)adjustedBoundingBox {
-    // Child classes may choose to override this if they want a more accurate bounding box
-    return [self boundingBox];
-}
-
--(CCAnimation*)loadPlistForAnimationWithName:(NSString*)animationName andClassName:(NSString*)className {
+-(void)readPlist:(NSString*)plistName forClassName:(NSString*)className
+{
+    NSDictionary* cfg = nil;
     
-    CCAnimation *animationToReturn = nil;
-    NSString *fullFileName =
-    [NSString stringWithFormat:@"%@.plist", className];
-    NSString *plistPath;
+    // Locate the plist within the app bundle.
+    NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"GameObject" ofType:@"plist"];
     
-    // 1: Get the Path to the plist file
-    NSString *rootPath =
-    NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                         NSUserDomainMask, YES)[0];
-    plistPath = [rootPath stringByAppendingPathComponent:fullFileName];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:plistPath]) {
-        plistPath = [[NSBundle mainBundle]
-                     pathForResource:className ofType:@"plist"];
-    }
-    
-    // 2: Read in the plist file
-    NSDictionary *plistDictionary =
-    [NSDictionary dictionaryWithContentsOfFile:plistPath];
-    
-    // 3: If the plistDictionary was null, the file was not found.
-    if (plistDictionary == nil) {
-        CCLOG(@"Error reading plist: %@.plist", className);
-        return nil; // No Plist Dictionary or file found
-    }
-    
-    // 4: Get just the mini-dictionary for this animation
-    NSDictionary *animationSettings =
-    plistDictionary[animationName];
-    if (animationSettings == nil) {
-        CCLOG(@"Could not locate AnimationWithName:%@",animationName);
-        return nil;
-    }
-    
-    // 5: Get the delay value for the animation
-    float animationDelay =
-    [animationSettings[@"delay"] floatValue];
-    
-    // 6: Add the frames to the animation
-    NSString *animationFramePrefix =
-    animationSettings[@"filenamePrefix"];
-    NSString *animationFrames =
-    animationSettings[@"animationFrames"];
-    NSMutableArray *spriteFrames = [NSMutableArray arrayWithArray:[animationFrames componentsSeparatedByString:@","]];
-    
-    for (NSUInteger i = 0; i < [spriteFrames count]; ++i) {
-        NSString *frameName =
-        [NSString stringWithFormat:@"%@%@.png", animationFramePrefix, spriteFrames[i]];
+    // If we managed to find the plist...
+    if ( plistPath != nil )
+    {
+        // ...extract the root dictionary.
+        NSDictionary* rootCfg = [NSDictionary dictionaryWithContentsOfFile:plistPath];
         
-        spriteFrames[i] = [[CCSpriteFrameCache sharedSpriteFrameCache]
-                                                         spriteFrameByName:frameName];
+        // If we have the root config...
+        if ( rootCfg != nil )
+        {
+            NSLog(@"Loading class named %@.", className);
+        
+            // ...try and extract the animations for this class.
+            cfg = rootCfg[className];
+        }
+    }
+    else
+    {
+        NSLog(@"Failed to find plist %@", plistName);
     }
     
-    animationToReturn = [CCAnimation animationWithSpriteFrames:spriteFrames delay:animationDelay];
+    // If we found the plist go ahead and extract what we want.
+    if ( cfg != nil )
+    {
+        _initCfg = cfg[@"init"];
+        _animCfg = cfg[@"animations"];
+    }
+}
     
-    return animationToReturn;
+-(void)loadInitAnimation
+{
+    // If we loaded the init config...
+    if ( _initCfg != nil )
+    {
+        // ...then load the init animation.
+        NSString* initAnimationName = _initCfg[@"initAnimation"];
+        
+        // Run the animation.
+        [self runAction:[SKAction repeatActionForever:[self animationWithName:initAnimationName]]];
+    }
+}
+
+-(void)changeState:(GameObjectState)newState
+{
+    // Child classes should override this
+}
+
+//-(void)updateStateWithDeltaTime:(ccTime)deltaTime andListOfGameObjects:(CCArray*)listOfGameObjects
+//{
+//    // Child classes should override this
+//}
+
+-(SKAction*)animationWithName:(NSString*)animationName
+{
+    // Animation to return.
+    SKAction* retVal = nil;
+    
+    // Initialise the animation details.
+    NSString* atlasName = nil;
+    NSString* prefix = nil;
+    NSMutableArray* frames = nil;
+    float delay = 0.0;
+        
+    // If we have the class config...
+    if ( _animCfg != nil )
+    {
+        // ...load all the details for the given animation.
+        NSDictionary* animationDetails = _animCfg[animationName];
+        
+        if ( animationDetails != nil )
+        {
+            atlasName = animationDetails[@"atlasName"];
+            prefix = animationDetails[@"filenamePrefix"];
+            frames = animationDetails[@"animationFrames"];
+            delay = [animationDetails[@"delay"] floatValue];
+        }
+    }
+
+    // If we managed to extract the animation information from the plist, continue to create the animation, else log an
+    // error.
+    if ( atlasName != nil && prefix != nil && frames != nil && frames.count > 0 && delay > 0.0 )
+    {
+        // Initialise an array of textures.
+        NSMutableArray* textures = [NSMutableArray array];
+        
+        // Go over every frame we extracted and add it to the animation.
+        for ( NSString* frame in frames )
+        {
+            // Get the texture atlas.
+            SKTextureAtlas* atlas = [Utilities initTextureAtlasNamed:atlasName];
+            
+            // Format up the image name.
+            NSString* frameName = [NSString stringWithFormat:@"%@%@", prefix, frame];
+            
+            // Add the texture to the texture array.
+            [textures addObject:[atlas textureNamed:frameName]];
+            
+            // For the first texture, store it so we can get the size. We only care about this once and it's stupid.
+            // Once I realise what it is that I've done wrong, this can be removed.
+            if ( _initFrame == nil )
+            {
+                _initFrame = textures[0];
+            }
+        }
+        
+        // Create the animation and assign it to the return value.
+        retVal = [SKAction animateWithTextures:textures timePerFrame:delay resize:YES restore:NO];
+    }
+    else
+    {
+        // Log an error.
+        NSLog(@"Failed to load the animation %@.", animationName);
+    }
+    
+    return retVal;
 }
 
 @end

@@ -27,11 +27,35 @@
 #ifndef hashtag_warrior_Constants_h
 #define hashtag_warrior_Constants_h
 
+// UI & Appearance
+#define kHWTextColor [SKColor colorWithRed:8.0/255.0 green:90.0/255.0 blue:124.0/255.0 alpha:1];
+
+#define kHWTextBodyFamily @"Marker Felt"
+#define kHWTextBodySize 12
+
+// Node Names
+#define kHWHUDHashtagName @"HUDHashtag"
+#define kHWHUDScoreName @"HUDScore"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // UI & appearance
 #define kHWBackgroundColor ccc4(142, 193, 218, 255)
-#define kHWTextColor ccc3(8, 90, 124);
+#define kHWTextColor_cc2d ccc3(8, 90, 124);
 #define kHWTextHeadingFamily @"Marker Felt"
-#define kHWTextBodyFamily @"Arial12.fnt"
 
 // Define macros to position items according to percentages on screen
 #define PCT_FROM_TOP(__f__)\

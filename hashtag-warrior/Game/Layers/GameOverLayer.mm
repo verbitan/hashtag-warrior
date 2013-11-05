@@ -41,7 +41,7 @@
         CCLabelTTF *title = [CCLabelTTF labelWithString:NSLocalizedString(@"Game Over!", nil)
                                                fontName:kHWTextHeadingFamily
                                                fontSize:64];
-        title.color = kHWTextColor;
+        title.color = kHWTextColor_cc2d;
         title.position = ccp(size.width/2, (size.height/2)+100);
         [self addChild: title];
         
@@ -57,7 +57,7 @@
         CCLabelTTF *score = [CCLabelTTF labelWithString:youScored
                                                fontName:kHWTextHeadingFamily
                                                fontSize:24];
-        score.color = kHWTextColor;
+        score.color = kHWTextColor_cc2d;
         score.position = ccp(size.width/2, size.height/2);
         [self addChild: score];
         
@@ -66,12 +66,12 @@
                                     {
                                         [[GameManager sharedGameManager] runSceneWithID:kHWGameScene];
                                     }];
-        playAgain.color = kHWTextColor;
+        playAgain.color = kHWTextColor_cc2d;
         CCMenuItemLabel *mainMenu = [CCMenuItemFont itemWithString:NSLocalizedString(@"Main menu", nil) block:^(id sender)
                                   {
                                       [[GameManager sharedGameManager] runSceneWithID:kHWMainMenuScene];
                                   }];
-        mainMenu.color = kHWTextColor;
+        mainMenu.color = kHWTextColor_cc2d;
         CCMenuItemLabel *shareIt = [CCMenuItemFont itemWithString:NSLocalizedString(@"Share", nil) block:^(id sender)
                                      {
                                          // First check if we are able to send a Tweet.
@@ -102,7 +102,7 @@
                                              [alertView show];
                                          }
                                      }];
-        shareIt.color = kHWTextColor;
+        shareIt.color = kHWTextColor_cc2d;
         CCMenu *menu = [CCMenu menuWithItems:playAgain, mainMenu, nil];
         
         // Only add the share button if not in practice mode
